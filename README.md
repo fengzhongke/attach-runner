@@ -1,2 +1,3 @@
 # attach-runner
-java tools to comunicate with running java process
+use can use this tool to comunicate with a running process like jstat or jstack
+run external code in the running process
