@@ -2,24 +2,22 @@ package com.ali.dbtech.attach;
 
 import java.util.Set;
 
-public class SingleClassLoader<T> extends ClassLoader {
+public class SingleClassLoader extends ClassLoader {
 	private Set<ClassLoader> classLoaders;
 	private String className;
 	private byte[] bytes;
-	private Class<T> superClass;
 
-	public SingleClassLoader(Set<ClassLoader> classLoaders, String className, byte[] bytes, Class<T> superClass) {
+	public SingleClassLoader(Set<ClassLoader> classLoaders, String className, byte[] bytes) {
 		this.classLoaders = classLoaders;
 		this.className = className;
 		this.bytes = bytes;
-		this.superClass = superClass;
 	}
 
 	@Override
 	public Class<?> loadClass(String name) throws ClassNotFoundException {
 		Class<?> clasz = null;
 		if (name.equals(className)) {
-			return getClasz();
+			return getClasz(null);
 		}
 		for (ClassLoader classLoader : classLoaders) {
 			try {
@@ -32,9 +30,9 @@ public class SingleClassLoader<T> extends ClassLoader {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Class<T> getClasz() throws ClassNotFoundException {
+	public <T> Class<T> getClasz(Class<T> superClass) throws ClassNotFoundException {
 		Class<?> clasz = this.defineClass(className, bytes, 0, bytes.length);
-		if (!superClass.isAssignableFrom(clasz)) {
+		if (superClass != null && !superClass.isAssignableFrom(clasz)) {
 			return null;
 		} else {
 			return (Class<T>) clasz;
